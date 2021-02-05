@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'FalabellaServeleesConsumer
+
+  Sample SAM Template for FalabellaServeleesConsumer
+
+  '
+Globals:
+  Function:
+    Timeout: 20
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      MemorySize: 512
+      Environment:
+        Variables:
+          DB_URL: jdbc:mysql://localhost:3306/falabella
+          DB_USER: root
+          DB_PASSWORD: rubendario21
+      Events:
+        Consumer:
+          Type: Api
+          Properties:
+            Path: /consumer
+            Method: post
+      ImageUri: helloworldfunction:java8-maven-v1
+    Metadata:
+      DockerTag: java8-maven-v1
+      DockerContext: ./HelloWorldFunction
+      Dockerfile: Dockerfile
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+  HelloWorldFunction:
+    Description: Hello World Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunction
+      - Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunctionRole
+      - Arn
